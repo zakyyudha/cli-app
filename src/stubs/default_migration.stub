@@ -1,0 +1,11 @@
+import { Db, MongoClient } from 'mongodb';
+
+module.exports = {
+    async up(db: Db, client: MongoClient) {
+        // TODO write your migration here.
+    },
+
+    async down(db: Db, client: MongoClient) {
+        // TODO write the statements to rollback your migration (if possible)
+    },
+};

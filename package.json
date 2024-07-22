@@ -1,0 +1,53 @@
+{
+  "name": "@zakyyudha/cli-app",
+  "version": "0.1.0",
+  "description": "A CLI package that wraps commander.js and mongo migration",
+  "main": "dist/index.js",
+  "bin": {
+    "cli-app": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && cp -rv src/stubs dist/stubs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:local": "rm -rf dist && npm run build && npm link"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "cli-table": "^0.3.11",
+    "migrate-mongo": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/cli-table": "^0.3.4",
+    "@types/migrate-mongo": "^10.0.4",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5",
+    "mongodb": "^4.17.2",
+    "eslint-config-love": "^48.0.0"
+  },
+  "author": "Zaky Yudha",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zakyyudha/cli-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zakyyudha/cli-app/issues"
+  },
+  "homepage": "https://github.com/zakyyudha/cli-app#readme",
+  "keywords": [
+    "cli",
+    "typescript",
+    "mongo",
+    "postgresql",
+    "kafka",
+    "redis"
+  ],
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
