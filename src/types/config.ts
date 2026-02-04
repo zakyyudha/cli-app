@@ -3,4 +3,3 @@ export interface ICliAppConfig {
   asciiLogo?: string;
   description?: string;
 }
-

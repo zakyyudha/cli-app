@@ -1,0 +1,23 @@
+{
+    "git": {
+        "commit": true,
+        "tag": true,
+        "push": true,
+        "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+        "release": true
+    },
+    "npm": {
+        "publish": true,
+        "publishArgs": [
+            "--access public"
+        ]
+    },
+    "hooks": {
+        "before:init": [
+            "npm run lint"
+        ],
+        "after:bump": "npm run build"
+    }
+}

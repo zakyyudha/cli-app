@@ -1,11 +1,15 @@
-import { Db, MongoClient } from 'mongodb';
+import { Db, MongoClient, ClientSession } from 'mongodb';
 
 module.exports = {
-    async up(db: Db, client: MongoClient) {
-        // TODO write your migration here.
-    },
+  async up(db: Db, client: MongoClient, session?: ClientSession) {
+    // TODO write your migration here.
+    // Example with session:
+    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}}, {session});
+  },
 
-    async down(db: Db, client: MongoClient) {
-        // TODO write the statements to rollback your migration (if possible)
-    },
+  async down(db: Db, client: MongoClient, session?: ClientSession) {
+    // TODO write the statements to rollback your migration (if possible)
+    // Example with session:
+    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}}, {session});
+  },
 };

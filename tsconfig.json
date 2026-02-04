@@ -9,15 +9,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "declaration": true
+    "declaration": true,
+    "paths": {
+      "@zakyyudha/cli-app": ["./src"]
+    }
   },
-  "include": [
-    "stubs/*.stub",
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tests"
-  ]
+  "include": ["stubs/*.stub", "src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "tests"]
 }

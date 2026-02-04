@@ -1,12 +1,13 @@
 import { Command } from 'commander';
-import { ICliAppConfig } from './types/config';
+import { type ICliAppConfig } from './types/config';
+import { type Config } from './types/migration';
 import MigrationCommand from './commands/migration';
 
 class CliApp {
   public program: Command;
-  private config: ICliAppConfig;
+  private readonly config: ICliAppConfig;
 
-  constructor (config: ICliAppConfig = {}) {
+  constructor(config: ICliAppConfig = {}) {
     this.config = config;
     this.program = new Command();
     this.program.name(this.config.name || 'cli-app');
@@ -15,4 +16,4 @@ class CliApp {
   }
 }
 
-export { CliApp, MigrationCommand };
+export { CliApp, MigrationCommand, type ICliAppConfig, type Config };
