@@ -1,6 +1,7 @@
 import { type Command } from 'commander';
 import Table from 'cli-table';
 import migrateMongo, { type MigrationStatus } from 'migrate-mongo';
+import { type Db, type MongoClient } from 'mongodb';
 import path from 'node:path';
 
 import { type Config } from '../types/migration';
@@ -38,6 +39,56 @@ class MigrationCommand {
     } catch (err: unknown) {
       handleError(err as Error);
     }
+  }
+
+
+  private async runMigrationDown(migration: { down?: (...args: unknown[]) => unknown }, db: Db, client: MongoClient): Promise<void> {
+    if (typeof migration.down !== 'function') {
+      throw new Error('Migration file does not export down function.');
+    }
+
+    if (migration.down.length >= 3) {
+      await new Promise<void>((resolve, reject) => {
+        migration.down?.(db, client, (err?: Error | null) => {
+          if (err != null) {
+            reject(err);
+            return;
+          }
+
+          resolve();
+        });
+      });
+      return;
+    }
+
+    if (migration.down.length >= 2) {
+      await Promise.resolve(migration.down(db, client));
+      return;
+    }
+
+    await Promise.resolve(migration.down(db));
+  }
+
+  private async downLatestApplied(db: Db, client: MongoClient): Promise<string[]> {
+    const config = await migrateMongo.config.read();
+    const changelogCollection = db.collection(config.changelogCollectionName);
+    const [latestApplied] = await changelogCollection
+      .aggregate([
+        { $sort: { appliedAt: -1, migrationBlock: -1, _id: -1 } },
+        { $limit: 1 },
+      ])
+      .toArray();
+
+    if (latestApplied == null) return [];
+
+    const migrationPath = path.resolve(config.migrationsDir ?? 'migrations', latestApplied.fileName as string);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const migration = require(migrationPath) as { down?: (...args: unknown[]) => unknown };
+
+    await this.runMigrationDown(migration, db, client);
+    await changelogCollection.deleteOne({ _id: latestApplied._id });
+
+    return [latestApplied.fileName as string];
   }
 
   private init(): void {
@@ -120,7 +171,7 @@ class MigrationCommand {
         try {
           global.options = options;
           const { db, client } = await migrateMongo.database.connect();
-          const migrated = await migrateMongo.down(db, client);
+          const migrated = await this.downLatestApplied(db, client);
           migrated.forEach((migratedItem) => {
             console.log(`MIGRATED DOWN: ${migratedItem}`);
           });
